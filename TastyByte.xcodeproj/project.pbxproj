@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		35EC6D2330466D220040C777 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 35EC6D2230466D220040C777 /* SQLite */; };
+		35EC6D2830466D3E0040C777 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 35EC6D2730466D3E0040C777 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		35EC6D0230465F830040C777 /* TastyByte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TastyByte.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				35EC6D2830466D3E0040C777 /* Kingfisher in Frameworks */,
+				35EC6D2330466D220040C777 /* SQLite in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +85,8 @@
 			);
 			name = TastyByte;
 			packageProductDependencies = (
+				35EC6D2230466D220040C777 /* SQLite */,
+				35EC6D2730466D3E0040C777 /* Kingfisher */,
 			);
 			productName = TastyByte;
 			productReference = 35EC6D0230465F830040C777 /* TastyByte.app */;
@@ -107,6 +116,10 @@
 			);
 			mainGroup = 35EC6CF930465F830040C777;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				35EC6D2130466D220040C777 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
+				35EC6D2630466D3E0040C777 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 35EC6D0330465F830040C777 /* Products */;
 			projectDirPath = "";
@@ -345,6 +358,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		35EC6D2130466D220040C777 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.16.0;
+			};
+		};
+		35EC6D2630466D3E0040C777 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.12.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		35EC6D2230466D220040C777 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 35EC6D2130466D220040C777 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
+		};
+		35EC6D2730466D3E0040C777 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 35EC6D2630466D3E0040C777 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 35EC6CFA30465F830040C777 /* Project object */;
 }
