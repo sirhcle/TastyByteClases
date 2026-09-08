@@ -121,5 +121,55 @@ final class SQLiteManager {
         }
     }
     
+    /// Busca un registro existente cuyo texto coincida exactamente con `query`,
+    /// sin distinguir mayúsculas/minúsculas ("Pollo" y "pollo" se consideran el mismo).
+    /// - Returns: el `SearchItem` encontrado, o `nil` si no existe todavía.
+    func findSearch(query: String) -> SearchItem? {
+        guard let db = db else { return nil }
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        do {
+            let match = searchTable.filter(queryText.collate(.nocase) == trimmed)
+            if let row = try db.pluck(match) {
+                return SearchItem(id: row[id], query: row[queryText], date: row[createdAt])
+            }
+        } catch {
+            print("❌ Error al buscar en SQLite: \(error.localizedDescription)")
+        }
+        
+        return nil
+    }
+
+    /// Actualiza la fecha de un registro existente a "ahora" (UPDATE).
+    /// No cambia el texto de la búsqueda — solo refleja que se volvió a buscar lo mismo.
+    /// - Parameter searchId: ID primario del registro a actualizar.
+    func updateSearch(id searchId: Int64) {
+        guard let db = db else { return }
+        
+        do {
+            let itemToUpdate = searchTable.filter(id == searchId)
+            try db.run(itemToUpdate.update(createdAt <- Date()))
+            print("✅ Registro de historial actualizado (nueva fecha) en SQLite.")
+        } catch {
+            print("❌ Error al actualizar en SQLite: \(error.localizedDescription)")
+        }
+    }
+
+    /// Punto de entrada recomendado al confirmar una búsqueda: si el término ya existe
+    /// en el historial, actualiza su fecha (UPDATE); si no existe, lo crea (INSERT).
+    /// Este patrón se conoce como "upsert" (update + insert).
+    func saveOrUpdateSearch(query: String) {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        
+        if let existing = findSearch(query: trimmed)
+        {
+            //TODO: actualizar
+            updateSearch(id: existing.id)
+        } else {
+            //TODO: salvar registro nuevo
+            saveSearch(query: trimmed)
+        }
+    }
 }
+
 
