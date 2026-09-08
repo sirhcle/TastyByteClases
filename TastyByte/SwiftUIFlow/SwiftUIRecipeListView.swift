@@ -18,11 +18,15 @@ struct SwiftUIRecipeListView: View {
         .searchSuggestions {
             //TODO: Filtrados de búsqueda
             ForEach(filteredSuggestions) { item in
-                Text(item.query).searchCompletion(item.query)
+                Text(item.query)
+                    .searchCompletion(item.query)
+                    .onAppear {
+                        print("🔍 Item: \(item.query) Fecha: \(item.date.formatted(date: .abbreviated, time: .shortened))")
+                    }
             }
         }
         .onSubmit(of: .search) {
-            //performSearch()
+            performSearch()
         }
     }
     
@@ -51,7 +55,8 @@ struct SwiftUIRecipeListView: View {
         
         guard !texto.isEmpty else { return }
         
-        SQLiteManager.shared.saveSearch(query: texto)
+        //SQLiteManager.shared.saveSearch(query: texto)
+        SQLiteManager.shared.saveOrUpdateSearch(query: texto)
     }
     
     
