@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 class MainSelectorViewController: UIViewController {
     
@@ -118,7 +119,7 @@ class MainSelectorViewController: UIViewController {
     // MARK: - Acciones e interoperabilidad
     private func setupActions() {
         //uikitButton.addTarget(self, action: #selector(pushUIKit), for: .touchUpInside)
-        //swiftuiButton.addTarget(self, action: #selector(pushSwiftUI), for: .touchUpInside)
+        swiftuiButton.addTarget(self, action: #selector(openSwiftUIFlow), for: .touchUpInside)
         darkModeSwitch.addTarget(self, action: #selector(toggleDarkMode), for: .valueChanged)
     }
     
@@ -143,5 +144,32 @@ class MainSelectorViewController: UIViewController {
         }
     }
     
+    /// ABRE LA VERSIÓN SWIFTUI MEDIANTE UIHOSTINGCONTROLLER (INTEROPERABILIDAD)
+    @objc private func openSwiftUIFlow() {
+        let swiftUIView = SwiftUIRecipeTabContainer()
+        
+        let hostingController = UIHostingController(rootView: swiftUIView)
+        navigationController?.pushViewController(hostingController, animated: true)
+    }
+    
 
+}
+
+
+// MARK: - SwiftUIRecipeTabContainer
+/// Vista auxilar de SwiftUI que agrupa el Catálogo y la pantalla de Favoritos mediante un TabView.
+struct SwiftUIRecipeTabContainer: View {
+    var body: some View {
+        TabView {
+            SwiftUIRecipeListView()
+                .tabItem {
+                    Label("Recetas", systemImage: "book.fill")
+                }
+            
+            /*SwiftUIFavoritesView()
+                .tabItem {
+                    Label("Favoritos", systemImage: "heart.fill")
+                }*/
+        }
+    }
 }

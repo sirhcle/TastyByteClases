@@ -17,11 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         let window = UIWindow(windowScene: windowScene)
-        //let rootVC = MainSelectorViewController()
+        let rootVC = MainSelectorViewController()
         
         //let rootVC = PersistenciaKeyChainViewController()
         //let rootVC = PersistenciaFileManagerViewController()
-        let rootVC = PersistenciaSQLiteManagerViewController()
+        //let rootVC = PersistenciaSQLiteManagerViewController()
         let navController = UINavigationController(rootViewController: rootVC)
 
         window.rootViewController = navController
