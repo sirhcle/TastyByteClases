@@ -26,12 +26,12 @@ class UIKitRecipeListViewController: UIViewController {
         
         // Sugerencias de historial bajo el buscador: al tocar una sugerencia se llena
         // el campo y se procesa como si el usuario hubiera presionado Enter con ese texto.
-        /*
+        
         historyViewController.onSelectSuggestion = { [weak self] texto in
             self?.searchController.searchBar.text = texto
             self?.handleSearchSubmitted(texto)
             self?.searchController.isActive = false
-        }*/
+        }
     }
     
     private func handleSearchSubmitted(_ query: String) { }
@@ -45,7 +45,7 @@ extension UIKitRecipeListViewController: UISearchResultsUpdating {
         // memoria (allHistory) — nunca para guardar en SQLite ni disparar una búsqueda.
         // Guardar sigue pasando únicamente al confirmar (ver searchBarSearchButtonClicked).
         let texto = searchController.searchBar.text ?? ""
-        //historyViewController.filter(by: texto)
+        historyViewController.filter(by: texto)
     }
     
     
