@@ -118,7 +118,7 @@ class MainSelectorViewController: UIViewController {
     
     // MARK: - Acciones e interoperabilidad
     private func setupActions() {
-        //uikitButton.addTarget(self, action: #selector(pushUIKit), for: .touchUpInside)
+        uikitButton.addTarget(self, action: #selector(openUIKitFlow), for: .touchUpInside)
         swiftuiButton.addTarget(self, action: #selector(openSwiftUIFlow), for: .touchUpInside)
         darkModeSwitch.addTarget(self, action: #selector(toggleDarkMode), for: .valueChanged)
     }
@@ -142,6 +142,39 @@ class MainSelectorViewController: UIViewController {
                 window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
             }
         }
+    }
+    
+    /// Abre la versión UIKit empujándola en el UINavigationController
+    @objc private func openUIKitFlow() {
+        let catalogVC = UIKitRecipeListViewController()
+        catalogVC.tabBarItem = UITabBarItem(title: "Recetas", image: UIImage(systemName: "book.fill"), tag: 0)
+        catalogVC.onClose = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+
+        /*let favoritesVC = UIKitFavoritesViewController()
+        favoritesVC.tabBarItem = UITabBarItem(title: "Favoritos", image: UIImage(systemName: "heart.fill"), tag: 1)
+        favoritesVC.onClose = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }*/
+
+        // IMPORTANTE: cada pestaña necesita su propio UINavigationController.
+        // Si no, el navigationItem.searchController de catalogVC nunca se muestra,
+        // porque la barra de navegación visible sería la del UITabBarController,
+        // no la de cada pantalla individual.
+        let catalogNav = UINavigationController(rootViewController: catalogVC)
+        
+        //let favoritesNav = UINavigationController(rootViewController: favoritesVC)
+
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [catalogNav, /*favoritesNav*/]
+        tabBarController.title = "UIKit Flow"
+
+        // Ocultamos la barra de navegación EXTERNA (la de MainSelectorViewController)
+        // porque cada tab ya trae la suya propia (catalogNav / favoritesNav).
+        // Sin esto, se verían dos barras de navegación apiladas.
+        navigationController?.setNavigationBarHidden(true, animated: true)
+        navigationController?.pushViewController(tabBarController, animated: true)
     }
     
     /// ABRE LA VERSIÓN SWIFTUI MEDIANTE UIHOSTINGCONTROLLER (INTEROPERABILIDAD)
