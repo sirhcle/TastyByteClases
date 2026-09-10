@@ -7,10 +7,36 @@ class UIKitRecipeListViewController: UIViewController {
     private let historyViewController = SearchHistoryTableViewController()
     private lazy var searchController = UISearchController(searchResultsController: historyViewController)
     
+    
+    /// Closure que se ejecuta al tocar el botón de cerrar.
+    /// La asigna quien presenta esta pantalla (MainSelectorViewController)
+    /// para saber cómo regresar al selector inicial.
+    var onClose: (() -> Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupUI()
         setupSearchController()
+    }
+    
+    private func setupUI() {
+        title = "Recetas (UIKit)"
+        view.backgroundColor = .systemBackground
+        
+        // Botón para regresar al selector inicial, ya que la barra de
+        // navegación externa se oculta mientras estamos en este flujo.
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .close,
+            target: self,
+            action: #selector(closeTapped)
+        )
+        
+    }
+    
+    
+    @objc private func closeTapped() {
+        onClose?()
     }
     
     private func setupSearchController() {
@@ -34,7 +60,18 @@ class UIKitRecipeListViewController: UIViewController {
         }
     }
     
-    private func handleSearchSubmitted(_ query: String) { }
+    private func handleSearchSubmitted(_ query: String) {
+        let texto = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !texto.isEmpty else { return }
+        
+        // Guardar la búsqueda en SQLite e UserDefaults
+        
+        SQLiteManager.shared.saveOrUpdateSearch(query: texto)
+        
+        // Refrescamos la lista de sugerencias de inmediato, para que la próxima vez
+        // que se toque el campo ya aparezca esta búsqueda como la más reciente.
+        historyViewController.reloadSuggestions()
+    }
     
 
 }
