@@ -78,6 +78,21 @@ class MainSelectorViewController: UIViewController {
         setupUI()
         setupActions()
         
+        ///EJEMPLO DE USO DE NETWORK MANAGER
+        /*Task {
+            do {
+                let recetas = try await NetworkManager.shared.searchRecipes(query: "")
+                print("✅ Se encontraron \(recetas.count) recetas")
+                
+                for receta in recetas.prefix(5) {
+                    print("🍽️ \(receta.title) — \(receta.category) / \(receta.area)")
+                }
+                
+            } catch {
+                print("❌ Error al buscar recetas: \(error.localizedDescription)")
+            }
+        }*/
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
