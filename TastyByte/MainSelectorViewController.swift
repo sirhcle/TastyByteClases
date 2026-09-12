@@ -210,10 +210,10 @@ struct SwiftUIRecipeTabContainer: View {
                     Label("Recetas", systemImage: "book.fill")
                 }
             
-            /*SwiftUIFavoritesView()
+            SwiftUIFavoritesView()
                 .tabItem {
                     Label("Favoritos", systemImage: "heart.fill")
-                }*/
+                }
         }
     }
 }
