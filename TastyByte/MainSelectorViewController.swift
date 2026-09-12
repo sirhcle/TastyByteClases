@@ -1,12 +1,6 @@
-//
-//  MainSelectorViewController.swift
-//  TastyByte
-//
-//  Created by CHRISTIAN HERNANDEZ RIVERA on 31/08/26.
-//
-
 import UIKit
 import SwiftUI
+import SwiftData
 
 class MainSelectorViewController: UIViewController {
     
@@ -195,8 +189,10 @@ class MainSelectorViewController: UIViewController {
     /// ABRE LA VERSIÓN SWIFTUI MEDIANTE UIHOSTINGCONTROLLER (INTEROPERABILIDAD)
     @objc private func openSwiftUIFlow() {
         let swiftUIView = SwiftUIRecipeTabContainer()
+            .modelContainer(SwiftDataManager.shared.container)
         
         let hostingController = UIHostingController(rootView: swiftUIView)
+        
         navigationController?.pushViewController(hostingController, animated: true)
     }
     

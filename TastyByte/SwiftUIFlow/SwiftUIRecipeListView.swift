@@ -1,7 +1,15 @@
 import SwiftUI
 import Kingfisher
+import SwiftData
 
 struct SwiftUIRecipeListView: View {
+    
+    // MARK: - Environment & Query
+    /// Contexto de modelo para realizar operaciones CRUD en SwiftData (Insert/Delete)
+    @Environment(\.modelContext) private var modelContext
+    
+    /// Consulta reactiva a SwiftData para verificar de inmediato qué recetas ya son favoritas
+    @Query private var favorites: [SwiftDataRecipe]
     
     @State private var searchText: String = ""
     @State private var isLoading: Bool = false
@@ -89,14 +97,11 @@ struct SwiftUIRecipeListView: View {
             Spacer()
             
             Button {
-                print("boton favorito presionado")
-                //toggleFavorite(recipe: recipe)
+                toggleFavorite(recipe: recipe)
             } label: {
-                /*Image(systemName: isFavorite(id: recipe.id) ? "heart.fill" : "heart")
+                Image(systemName: isFavorite(id: recipe.id) ? "heart.fill" : "heart")
                     .foregroundColor(isFavorite(id: recipe.id) ? .red : .gray)
                     .font(.title3)
-                 */
-                Text("Favorito?")
             }
             .buttonStyle(.plain)
         }
@@ -162,6 +167,22 @@ struct SwiftUIRecipeListView: View {
         //SQLiteManager.shared.saveSearch(query: texto)
         SQLiteManager.shared.saveOrUpdateSearch(query: texto)
         loadRecipes(query: texto)
+    }
+    
+    // MARK: - SwiftData Helpers
+    private func isFavorite(id: String) -> Bool {
+        return favorites.contains { $0.id == id }
+    }
+    
+    private func toggleFavorite(recipe: Recipe) {
+        if let existing = favorites.first(where: { $0.id == recipe.id}) {
+            modelContext.delete(existing)
+            print("✅ Eliminado de SwiftData")
+        } else {
+            let newFavorito = SwiftDataRecipe(from: recipe)
+            modelContext.insert(newFavorito)
+            print("✅ Insertado en SwiftData")
+        }
     }
     
     
