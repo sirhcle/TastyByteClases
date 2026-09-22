@@ -19,9 +19,18 @@ struct SwiftUIRecipeListView: View {
     var body: some View {
         NavigationStack {
             Group {
+                
                 if isLoading {
-                    ProgressView("Cargando recetas...")
-                        .scaleEffect(1.2)
+//                    ProgressView("Cargando recetas...")
+//                        .scaleEffect(1.2)
+                    VStack(spacing: 12) {
+                        UIKitLoadingIndicator()
+                            .frame(width: 80, height: 80, alignment: .center)
+                        Text("Cargando recetas con indicator de UIKit")
+                            .foregroundColor(.primary)
+                    }
+                    
+                    
                 } else if recipes.isEmpty {
                     ContentUnavailableView(
                         "No se encuentran recetas",
