@@ -1,19 +1,12 @@
 import Foundation
 import SwiftData
 
-// MARK: - SwiftDataManager
-/// Manager singleton que administra el ModelContainer de SwiftData.
-
+/// Abre el `ModelContainer` de los favoritos.
+/// Ya no es un singleton: `AppFactory` lo crea al arrancar. Si falla, el error sube y la app muestra `StartupErrorViewController`.
 final class SwiftDataManager {
-    static let shared = SwiftDataManager()
-        
     let container: ModelContainer
-    
-    private init() {
-        do {
-            container = try ModelContainer(for: SwiftDataRecipe.self)
-        } catch {
-            fatalError("❌ Error al inicializar SwiftData ModelContainer: \(error)")
-        }
+
+    init() throws {
+        container = try ModelContainer(for: SwiftDataRecipe.self)
     }
 }

@@ -17,11 +17,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         let window = UIWindow(windowScene: windowScene)
-        let rootVC = MainSelectorViewController()
-        
+        // Único lugar que arma SwiftData, SQLite y las preferencias, y se las inyecta a la raíz.
         //let rootVC = PersistenciaKeyChainViewController()
         //let rootVC = PersistenciaFileManagerViewController()
         //let rootVC = PersistenciaSQLiteManagerViewController()
+        let rootVC = AppFactory.makeRootViewController()
         let navController = UINavigationController(rootViewController: rootVC)
 
         window.rootViewController = navController

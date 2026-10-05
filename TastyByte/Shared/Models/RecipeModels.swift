@@ -4,13 +4,13 @@ import Foundation
 /// La API siempre retorna un objeto con la clave "meals" que contiene un arreglo de recetas.
 
 struct RecipeResponse: Codable {
-    let meals: [Recipe]?
+    let meals: [RecipeDTO]?
 }
 
-// MARK: - Recipe
-/// Modelo principal que representa una receta de cocina.
-/// Conforma `Codable` para mapear el JSON y `Identifiable` para usarlo fácilmente en Listas de SwiftUI.
-struct Recipe: Codable, Identifiable{
+// MARK: - RecipeDTO
+/// DTO de TheMealDB. Las claves del JSON se quedan en esta capa.
+/// La entidad de dominio, sin Codable, está en `Domain/Entities/Recipe.swift`.
+struct RecipeDTO: Codable, Identifiable {
     // MARK: - Propiedades mapeadas directamente del JSON
     let idMeal: String
     let strMeal: String

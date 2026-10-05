@@ -28,15 +28,15 @@ final class SwiftDataRecipe{
         self.createdAt = createdAt
     }
     
-    // MARK: - Convenience Initializer desde Modelo API
-    /// Permite instanciar un SwiftDataRecipe directamente desde un modelo `Recipe` devuelto por la red.
+    // MARK: - Convenience Initializer desde la entidad
+    /// Copia los campos de la entidad de dominio al modelo persistente.
     convenience init(from recipe: Recipe) {
         self.init(
             id: recipe.id,
             title: recipe.title,
             category: recipe.category,
             area: recipe.area,
-            imageUrlString: recipe.imageUrl?.absoluteString ?? "",
+            imageUrlString: recipe.imageURL ?? "",
             instructions: recipe.instructions
         )
     }

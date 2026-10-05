@@ -64,6 +64,18 @@ class MainSelectorViewController: UIViewController {
         stack.alignment = .fill
         return stack
     }()
+
+    /// Dependencias que armó `AppFactory` en `SceneDelegate`. Esta pantalla no abre bases ni `UserDefaults`.
+    private let dependencies: AppDependencies
+
+    init(dependencies: AppDependencies) {
+        self.dependencies = dependencies
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("MainSelectorViewController se crea en código")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -133,16 +145,16 @@ class MainSelectorViewController: UIViewController {
     }
     
     private func loadPreferences() {
-        let isDarkMode = UserDefaultsManager.shared.isDarkModeEnabled
-        darkModeSwitch.isOn = isDarkMode
-        applyTheme(isDarkMode: isDarkMode)
+        let appearance = dependencies.preferences.loadAppearance()
+        darkModeSwitch.isOn = appearance.isDarkModeEnabled
+        applyTheme(isDarkMode: appearance.isDarkModeEnabled)
         print(FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!)
     }
     
     @objc private func toggleDarkMode() {
-        let isEnabled = darkModeSwitch.isOn
-        UserDefaultsManager.shared.isDarkModeEnabled = isEnabled
-        applyTheme(isDarkMode: isEnabled)
+        let preference = AppearancePreference(isDarkModeEnabled: darkModeSwitch.isOn)
+        dependencies.preferences.saveAppearance(preference)
+        applyTheme(isDarkMode: preference.isDarkModeEnabled)
     }
     
     private func applyTheme(isDarkMode: Bool) {
@@ -153,30 +165,43 @@ class MainSelectorViewController: UIViewController {
         }
     }
     
+    /// Pide el ViewModel al grafo que llegó desde `SceneDelegate`. No elige repositorios.
+    private func makeRecipeListViewModel() -> RecipeListViewModel {
+        dependencies.makeRecipeListViewModel()
+    }
+
+    private func makeFavoritesViewModel() -> FavoritesViewModel {
+        dependencies.makeFavoritesViewModel()
+    }
+
     /// Abre la versión UIKit empujándola en el UINavigationController
     @objc private func openUIKitFlow() {
-        let catalogVC = UIKitRecipeListViewController()
+        let favoritesViewModel = makeFavoritesViewModel()
+        // Se inyecta el ViewModel ya armado. El controlador no conoce la API ni SQLite.
+        let catalogVC = UIKitRecipeListViewController(
+            viewModel: makeRecipeListViewModel(),
+            favoritesViewModel: favoritesViewModel
+        )
         catalogVC.tabBarItem = UITabBarItem(title: "Recetas", image: UIImage(systemName: "book.fill"), tag: 0)
         catalogVC.onClose = { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }
 
-        /*let favoritesVC = UIKitFavoritesViewController()
+        let favoritesVC = UIKitFavoritesViewController(viewModel: favoritesViewModel)
         favoritesVC.tabBarItem = UITabBarItem(title: "Favoritos", image: UIImage(systemName: "heart.fill"), tag: 1)
         favoritesVC.onClose = { [weak self] in
             self?.navigationController?.popViewController(animated: true)
-        }*/
+        }
 
         // IMPORTANTE: cada pestaña necesita su propio UINavigationController.
         // Si no, el navigationItem.searchController de catalogVC nunca se muestra,
         // porque la barra de navegación visible sería la del UITabBarController,
         // no la de cada pantalla individual.
         let catalogNav = UINavigationController(rootViewController: catalogVC)
-        
-        //let favoritesNav = UINavigationController(rootViewController: favoritesVC)
+        let favoritesNav = UINavigationController(rootViewController: favoritesVC)
 
         let tabBarController = UITabBarController()
-        tabBarController.viewControllers = [catalogNav, /*favoritesNav*/]
+        tabBarController.viewControllers = [catalogNav, favoritesNav]
         tabBarController.title = "UIKit Flow"
 
         // Ocultamos la barra de navegación EXTERNA (la de MainSelectorViewController)
@@ -188,8 +213,14 @@ class MainSelectorViewController: UIViewController {
     
     /// ABRE LA VERSIÓN SWIFTUI MEDIANTE UIHOSTINGCONTROLLER (INTEROPERABILIDAD)
     @objc private func openSwiftUIFlow() {
-        let swiftUIView = SwiftUIRecipeTabContainer()
-            .modelContainer(SwiftDataManager.shared.container)
+        // Mismo ViewModel que UIKit: buscar y guardar historial pasan por los mismos casos de uso.
+        let recipeListViewModel = makeRecipeListViewModel()
+        let favoritesViewModel = makeFavoritesViewModel()
+        let swiftUIView = SwiftUIRecipeTabContainer(
+            recipeListViewModel: recipeListViewModel,
+            favoritesViewModel: favoritesViewModel
+        )
+            .modelContainer(dependencies.modelContainer)
         
         let hostingController = UIHostingController(rootView: swiftUIView)
         
@@ -203,17 +234,34 @@ class MainSelectorViewController: UIViewController {
 // MARK: - SwiftUIRecipeTabContainer
 /// Vista auxilar de SwiftUI que agrupa el Catálogo y la pantalla de Favoritos mediante un TabView.
 struct SwiftUIRecipeTabContainer: View {
+    /// Dueño del ViewModel mientras el flujo SwiftUI está en pantalla.
+    /// `@StateObject` lo conserva aunque SwiftUI vuelva a evaluar `body`.
+    @StateObject private var recipeListViewModel: RecipeListViewModel
+    /// Mismo objeto en el catálogo (corazones) y en la pestaña de favoritos.
+    @StateObject private var favoritesViewModel: FavoritesViewModel
+
+    /// Recibe los ViewModels que armó `AppDependencies`.
+    /// `_recipeListViewModel` escribe el wrapper de `@StateObject` desde un `init` propio.
+    init(recipeListViewModel: RecipeListViewModel, favoritesViewModel: FavoritesViewModel) {
+        _recipeListViewModel = StateObject(wrappedValue: recipeListViewModel)
+        _favoritesViewModel = StateObject(wrappedValue: favoritesViewModel)
+    }
+
     var body: some View {
         TabView {
-            SwiftUIRecipeListView()
+            SwiftUIRecipeListView(viewModel: recipeListViewModel, favoritesViewModel: favoritesViewModel)
                 .tabItem {
                     Label("Recetas", systemImage: "book.fill")
                 }
             
-            SwiftUIFavoritesView()
+            SwiftUIFavoritesView(viewModel: favoritesViewModel)
                 .tabItem {
                     Label("Favoritos", systemImage: "heart.fill")
                 }
+        }
+        .task {
+            // Lee SwiftData una vez al entrar. No ocurre al construir el ViewModel.
+            favoritesViewModel.load()
         }
     }
 }

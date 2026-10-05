@@ -1,22 +1,16 @@
 import SwiftUI
-import SwiftData
 import Kingfisher
 
 // MARK: - SwiftUIFavoritesView
-/// Vista que lista las recetas guardadas en la base de datos local usando SwiftData y la macro @Query.
+/// Lista los favoritos que publica `FavoritesViewModel`.
+/// No usa `@Query` ni `modelContext`: borrar llama a `remove(at:)`.
 struct SwiftUIFavoritesView: View {
-    
-    // MARK: - Environment & Query
-    @Environment(\.modelContext) private var modelContext
-    
-    /// Consulta reactiva automática ordenada por fecha de creación descendentemente
-    @Query(sort: \SwiftDataRecipe.createdAt, order: .reverse)
-    private var favoriteRecipes: [SwiftDataRecipe]
-    
+    @ObservedObject var viewModel: FavoritesViewModel
+
     var body: some View {
         NavigationStack {
             Group {
-                if favoriteRecipes.isEmpty {
+                if viewModel.favorites.isEmpty {
                     ContentUnavailableView(
                         "Sin Favoritos",
                         systemImage: "heart.slash",
@@ -24,28 +18,37 @@ struct SwiftUIFavoritesView: View {
                     )
                 } else {
                     List {
-                        ForEach(favoriteRecipes) { recipe in
+                        ForEach(viewModel.favorites) { recipe in
                             favoriteRow(recipe: recipe)
                         }
-                        .onDelete(perform: deleteFavorite)
+                        .onDelete { offsets in
+                            viewModel.remove(at: offsets)
+                        }
                     }
                     .listStyle(.insetGrouped)
                 }
             }
-            .navigationTitle("Favoritos (SwiftData)")
+            .navigationTitle("Favoritos")
             .toolbar {
-                if !favoriteRecipes.isEmpty {
+                if !viewModel.favorites.isEmpty {
                     EditButton()
                 }
             }
+            .alert("Error", isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.dismissError() } }
+            )) {
+                Button("OK") { viewModel.dismissError() }
+            } message: {
+                Text(viewModel.errorMessage ?? "")
+            }
         }
     }
-    
-    // MARK: - Row View
+
     @ViewBuilder
-    private func favoriteRow(recipe: SwiftDataRecipe) -> some View {
+    private func favoriteRow(recipe: Recipe) -> some View {
         HStack(spacing: 12) {
-            if let url = recipe.imageUrl {
+            if let imageURL = recipe.imageURL, let url = URL(string: imageURL) {
                 KFImage(url)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -55,23 +58,11 @@ struct SwiftUIFavoritesView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(recipe.title)
                     .font(.headline)
-                
+
                 Text("\(recipe.category) • \(recipe.area)")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
         }
     }
-    
-    // MARK: - Delete Handler
-    private func deleteFavorite(at offsets: IndexSet) {
-        for index in offsets {
-            let itemToDelete = favoriteRecipes[index]
-            modelContext.delete(itemToDelete)
-        }
-    }
 }
-
-/*#Preview {
-    SwiftUIFavoritesView()
-}*/
