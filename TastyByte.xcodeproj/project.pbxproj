@@ -13,6 +13,7 @@
 
 /* Begin PBXFileReference section */
 		35EC6D0230465F830040C777 /* TastyByte.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TastyByte.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		35EC6D3030465F830040C778 /* TastyByteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TastyByteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -34,6 +35,11 @@
 			path = TastyByte;
 			sourceTree = "<group>";
 		};
+		35EC6D3530465F890040C778 /* TastyByteTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TastyByteTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +52,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		35EC6D3330465F830040C778 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -53,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				35EC6D0430465F830040C777 /* TastyByte */,
+				35EC6D3530465F890040C778 /* TastyByteTests */,
 				35EC6D0330465F830040C777 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				35EC6D0230465F830040C777 /* TastyByte.app */,
+				35EC6D3030465F830040C778 /* TastyByteTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,6 +107,27 @@
 			productReference = 35EC6D0230465F830040C777 /* TastyByte.app */;
 			productType = "com.apple.product-type.application";
 		};
+		35EC6D3130465F830040C778 /* TastyByteTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 35EC6D3930465F890040C778 /* Build configuration list for PBXNativeTarget "TastyByteTests" */;
+			buildPhases = (
+				35EC6D3230465F830040C778 /* Sources */,
+				35EC6D3330465F830040C778 /* Frameworks */,
+				35EC6D3430465F830040C778 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				35EC6D3A30465F830040C778 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				35EC6D3530465F890040C778 /* TastyByteTests */,
+			);
+			name = TastyByteTests;
+			productName = TastyByteTests;
+			productReference = 35EC6D3030465F830040C778 /* TastyByteTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -104,6 +140,10 @@
 				TargetAttributes = {
 					35EC6D0130465F830040C777 = {
 						CreatedOnToolsVersion = 26.5;
+					};
+					35EC6D3130465F830040C778 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = 35EC6D0130465F830040C777;
 					};
 				};
 			};
@@ -126,12 +166,20 @@
 			projectRoot = "";
 			targets = (
 				35EC6D0130465F830040C777 /* TastyByte */,
+				35EC6D3130465F830040C778 /* TastyByteTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		35EC6D0030465F830040C777 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		35EC6D3430465F830040C778 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -148,7 +196,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		35EC6D3230465F830040C778 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXContainerItemProxy section */
+		35EC6D3B30465F830040C778 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 35EC6CFA30465F830040C777 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 35EC6D0130465F830040C777;
+			remoteInfo = TastyByte;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		35EC6D3A30465F830040C778 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 35EC6D0130465F830040C777 /* TastyByte */;
+			targetProxy = 35EC6D3B30465F830040C778 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		35EC6D1630465F890040C777 /* Debug */ = {
@@ -212,6 +285,50 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		35EC6D3730465F890040C778 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 54ZH6LLV7M;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = chr.chris.TastyByteTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TastyByte.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TastyByte";
+			};
+			name = Debug;
+		};
+		35EC6D3830465F890040C778 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 54ZH6LLV7M;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = chr.chris.TastyByteTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TastyByte.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TastyByte";
 			};
 			name = Release;
 		};
@@ -353,6 +470,15 @@
 			buildConfigurations = (
 				35EC6D1630465F890040C777 /* Debug */,
 				35EC6D1730465F890040C777 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		35EC6D3930465F890040C778 /* Build configuration list for PBXNativeTarget "TastyByteTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35EC6D3730465F890040C778 /* Debug */,
+				35EC6D3830465F890040C778 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
